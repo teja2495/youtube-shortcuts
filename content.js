@@ -47,7 +47,7 @@ function addWatchLaterButton() {
     } else {
       console.warn('[YouTube Plus] Icon div not found in Share button');
     }
-    // Set the button text to 'Later'
+    // Set the button text to 'Watch Later'
     const textDiv = btn.querySelector('.yt-spec-button-shape-next__button-text-content');
     if (textDiv) {
       textDiv.textContent = 'Later';
@@ -58,38 +58,9 @@ function addWatchLaterButton() {
 
     btn.onclick = async (e) => {
       e.stopPropagation();
-      const player = document.getElementById('movie_player');
-      if (!player || typeof player.getVideoData !== 'function') {
-        console.error('[YouTube Plus] Player or getVideoData not found');
-        return;
-      }
-      const videoId = player.getVideoData().video_id;
-      if (!videoId) {
-        console.error('[YouTube Plus] videoId not found');
-        return;
-      }
-      try {
-        await fetch(`https://www.youtube.com/watch?v=${videoId}&action_add_to_watch_later=1`, {
-          credentials: 'include',
-          method: 'POST',
-          headers: {
-            'x-youtube-client-name': '1',
-            'x-youtube-client-version': '2.20201021.03.00',
-          },
-        });
-        if (iconDiv) iconDiv.innerHTML = '✔️';
-        setTimeout(() => {
-          if (iconDiv) iconDiv.innerHTML = `<svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" pointer-events=\"none\" style=\"vertical-align: middle; margin-top: 2px;\"><circle cx=\"12\" cy=\"12\" r=\"10\" stroke=\"currentColor\" stroke-width=\"2\" fill=\"none\"/><path d=\"M12 7v5l4 2\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"/></svg>`;
-          if (textDiv) textDiv.textContent = 'Later';
-        }, 1500);
-      } catch (e) {
-        if (iconDiv) iconDiv.innerHTML = '❌';
-        setTimeout(() => {
-          if (iconDiv) iconDiv.innerHTML = `<svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" pointer-events=\"none\" style=\"vertical-align: middle; margin-top: 2px;\"><circle cx=\"12\" cy=\"12\" r=\"10\" stroke=\"currentColor\" stroke-width=\"2\" fill=\"none\"/><path d=\"M12 7v5l4 2\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"/></svg>`;
-          if (textDiv) textDiv.textContent = 'Later';
-        }, 1500);
-        console.error('[YouTube Plus] Failed to add to Watch Later', e);
-      }
+      // Use the same logic as the keyboard shortcut: executeYouTubeCommand
+      executeYouTubeCommand('add-to-watch-later');
+      // No icon or text change needed
     };
 
     // Replace the Share button with the Watch Later button
@@ -366,3 +337,55 @@ style.textContent = `
   }
 `;
 document.head.appendChild(style);
+
+// --- BEGIN: Add executeYouTubeCommand from background-ignore.js ---
+function executeYouTubeCommand(action) {
+  const getAddVideoParams = (videoId) => ({
+    clickTrackingParams: "",
+    commandMetadata: { webCommandMetadata: { sendPost: true, apiUrl: "/youtubei/v1/browse/edit_playlist" } },
+    playlistEditEndpoint: { playlistId: "WL", actions: [{ addedVideoId: videoId, action: "ACTION_ADD_VIDEO" }] }
+  });
+  
+  const getRemoveVideoParams = (videoId) => ({
+    clickTrackingParams: "",
+    commandMetadata: { webCommandMetadata: { sendPost: true, apiUrl: "/youtubei/v1/browse/edit_playlist" } },
+    playlistEditEndpoint: { playlistId: "WL", actions: [{ action: "ACTION_REMOVE_VIDEO_BY_VIDEO_ID", removedVideoId: videoId }] }
+  });
+
+  const sendActionToNativeYouTubeHandler = (getParams) => {
+    const location = new URL(window.location.href);
+    const appElement = document.querySelector("ytd-app");
+    let videoId = location.searchParams.get("v");
+
+    if (location.pathname.startsWith("/shorts/")) {
+      videoId = location.pathname.split("/")[2];
+    }
+
+    if (!videoId || !appElement) {
+      return;
+    }
+  
+    const event = new window.CustomEvent('yt-action', {
+      detail: {
+        actionName: 'yt-service-request',
+        returnValue: [],
+        args: [{ data: {} }, getParams(videoId)],
+        optionalAction: false,
+      }
+    });
+  
+    appElement.dispatchEvent(event);
+  };
+
+  try {
+    if (action === "add-to-watch-later") {
+      sendActionToNativeYouTubeHandler(getAddVideoParams);
+    }
+    if (action === "remove-from-watch-later") {
+      sendActionToNativeYouTubeHandler(getRemoveVideoParams);
+    }
+  } catch (error) {
+    console.warn("Error while sending message to native YouTube handler", error);
+  }
+}
+// --- END: Add executeYouTubeCommand from background-ignore.js ---

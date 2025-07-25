@@ -122,64 +122,17 @@ function addWatchLaterButton() {
   }
 }
 
-function injectLaterButton() {
-  // Avoid duplicate buttons
-  if (document.getElementById('ytp-later-btn')) return;
-
-  // Try to find a good place to inject the button (for regular videos and Shorts)
-  let titleContainer = document.querySelector('#above-the-fold #title');
-  if (!titleContainer) {
-    // Try Shorts title
-    titleContainer = document.querySelector('h1.title');
-  }
-  if (!titleContainer) return;
-
-  // Create the button
-  const btn = document.createElement('button');
-  btn.id = 'ytp-later-btn';
-  btn.textContent = 'Later';
-  btn.style.marginLeft = '12px';
-  btn.style.padding = '6px 12px';
-  btn.style.background = '#065fd4';
-  btn.style.color = '#fff';
-  btn.style.border = 'none';
-  btn.style.borderRadius = '3px';
-  btn.style.cursor = 'pointer';
-
-  // Add click handler
-  btn.addEventListener('click', () => {
-    executeYouTubeCommand('add-to-watch-later');
-    // Optionally, show a notification or change button state
-  });
-
-  // Inject the button
-  titleContainer.appendChild(btn);
-}
-
 // Remove button functionality is now handled by the X icon only
-function addRemoveButtons() {
-  // No-op
-}
-
-// Observe DOM changes to handle dynamic loading
-const removeButtonsObserver = new MutationObserver(addRemoveButtons);
-removeButtonsObserver.observe(document.body, { childList: true, subtree: true });
-
-// Initial run
-addRemoveButtons();
 
 // Observe for page changes (YouTube is SPA)
-const injectLaterButtonObserver = new MutationObserver(() => {
-  injectLaterButton();
-});
-injectLaterButtonObserver.observe(document.body, { childList: true, subtree: true });
+// Remove injectLaterButtonObserver
 
 // Observe for player controls and video changes
 const controlsInterval = setInterval(() => {
   const controls = document.querySelector('.ytp-right-controls');
   if (controls) {
     addWatchLaterButton();
-    injectLaterButtonObserver.observe(controls, { childList: true, subtree: true });
+    // Remove injectLaterButtonObserver.observe(controls, { childList: true, subtree: true });
     clearInterval(controlsInterval);
   }
 }, 1000);

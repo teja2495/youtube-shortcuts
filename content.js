@@ -96,22 +96,24 @@ function addWatchLaterButton() {
     shareBtn.parentNode.replaceChild(btn, shareBtn);
     console.log('[YouTube Plus] Replaced Share button with Later button');
 
-    // Find the first .yt-spec-touch-feedback-shape__fill div
-    const fillDiv = topLevelButtons.querySelector('.yt-spec-touch-feedback-shape__fill');
-    if (!fillDiv) {
-      console.warn('[YouTube Plus] .yt-spec-touch-feedback-shape__fill not found');
-      return;
+    // Remove the Clip button (by aria-label or title)
+    const clipBtn = Array.from(topLevelButtons.querySelectorAll('button')).find(
+      btn => btn.title === 'Clip' || btn.getAttribute('aria-label') === 'Clip'
+    );
+    if (clipBtn) {
+      clipBtn.parentNode.removeChild(clipBtn);
+      console.log('[YouTube Plus] Removed Clip button');
+    } else {
+      console.warn('[YouTube Plus] Clip button not found');
     }
 
-    // Remove the first .yt-spec-touch-feedback-shape__fill div (Clip button)
-    if (fillDiv) {
-      fillDiv.parentNode.removeChild(fillDiv);
-      console.log('[YouTube Plus] Removed .yt-spec-touch-feedback-shape__fill (Clip button)');
+    // Insert the Watch Later button after the Share button (or at the end if needed)
+    if (shareBtn.nextSibling) {
+      shareBtn.parentNode.insertBefore(btn, shareBtn.nextSibling);
+    } else {
+      shareBtn.parentNode.appendChild(btn);
     }
-
-    // Insert the Watch Later button after the fillDiv
-    fillDiv.parentNode.insertBefore(btn, fillDiv.nextSibling);
-    console.log('[YouTube Plus] Inserted Watch Later button after .yt-spec-touch-feedback-shape__fill');
+    console.log('[YouTube Plus] Inserted Watch Later button after Share button');
 
     // Set up a MutationObserver to move the Save button when the More menu is opened
     const observeSaveButton = () => {
@@ -301,6 +303,42 @@ addXIcons();
 // Observe for dynamic changes (YouTube uses SPA navigation)
 const xIconsObserver = new MutationObserver(addXIcons);
 xIconsObserver.observe(document.body, { childList: true, subtree: true });
+
+function swapSaveAndDownloadButtons() {
+  const flexibleButtons = document.getElementById('flexible-item-buttons');
+  if (!flexibleButtons) return;
+  // Find Save and Download buttons
+  const saveBtn = Array.from(flexibleButtons.querySelectorAll('button')).find(
+    btn => btn.title?.toLowerCase().includes('save') || btn.getAttribute('aria-label')?.toLowerCase().includes('save')
+  );
+  const downloadBtn = Array.from(flexibleButtons.querySelectorAll('button')).find(
+    btn => btn.title?.toLowerCase().includes('download') || btn.getAttribute('aria-label')?.toLowerCase().includes('download')
+  );
+  if (saveBtn && downloadBtn && saveBtn.nextSibling !== downloadBtn) {
+    // Move Save button before Download button
+    flexibleButtons.insertBefore(saveBtn, downloadBtn);
+    console.log('[YouTube Plus] Swapped Save and Download buttons');
+  }
+}
+
+function removeClipButtonFromFlexibleItemButtons() {
+  const flexibleButtons = document.getElementById('flexible-item-buttons');
+  if (!flexibleButtons) return;
+  const clipBtn = Array.from(flexibleButtons.querySelectorAll('button')).find(
+    btn => btn.title === 'Clip' || btn.getAttribute('aria-label') === 'Clip'
+  );
+  if (clipBtn) {
+    clipBtn.parentNode.removeChild(clipBtn);
+    console.log('[YouTube Plus] Removed Clip button from #flexible-item-buttons');
+  }
+  swapSaveAndDownloadButtons();
+}
+
+// Run on page load
+removeClipButtonFromFlexibleItemButtons();
+// Observe for dynamic changes
+const flexibleButtonsObserver = new MutationObserver(removeClipButtonFromFlexibleItemButtons);
+flexibleButtonsObserver.observe(document.body, { childList: true, subtree: true });
 
 // Add some CSS for the X icon
 const style = document.createElement('style');

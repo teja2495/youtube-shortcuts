@@ -2,17 +2,33 @@ console.log("YouTube Plus: content script loaded");
 
 // Removed autoSelectHighestQuality feature
 
+// Observe for player controls and video changes
+let watchLaterInterval = null;
+function startWatchLaterInterval() {
+  if (watchLaterInterval) return;
+  watchLaterInterval = setInterval(() => {
+    const controls = document.querySelector('.ytp-right-controls');
+    if (controls) {
+      const added = addWatchLaterButton();
+      if (added) {
+        clearInterval(watchLaterInterval);
+        watchLaterInterval = null;
+      }
+    }
+  }, 1000);
+}
+
 function addWatchLaterButton() {
   try {
     const topLevelButtons = document.getElementById('top-level-buttons-computed');
     if (!topLevelButtons) {
-      console.warn('[YouTube Plus] top-level-buttons-computed not found');
-      return;
+      // console.warn('[YouTube Plus] top-level-buttons-computed not found');
+      return false;
     }
 
     if (document.getElementById('ytp-watch-later-btn')) {
       // Already replaced
-      return;
+      return true;
     }
 
     // Remove text from click and download buttons if present
@@ -30,8 +46,8 @@ function addWatchLaterButton() {
       btn => btn.title === 'Share' || btn.getAttribute('aria-label') === 'Share'
     );
     if (!shareBtn) {
-      console.warn('[YouTube Plus] Share button not found');
-      return;
+      // console.warn('[YouTube Plus] Share button not found');
+      return false;
     }
 
     // Clone the Share button to preserve classes and structure
@@ -45,7 +61,7 @@ function addWatchLaterButton() {
     if (iconDiv) {
       iconDiv.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" pointer-events="none" style="vertical-align: middle; margin-top: 2px;"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" fill="none"/><path d="M12 7v5l4 2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>`;
     } else {
-      console.warn('[YouTube Plus] Icon div not found in Share button');
+      // console.warn('[YouTube Plus] Icon div not found in Share button');
     }
     // Set the button text to 'Watch Later'
     const textDiv = btn.querySelector('.yt-spec-button-shape-next__button-text-content');
@@ -53,7 +69,7 @@ function addWatchLaterButton() {
       textDiv.textContent = 'Later';
       textDiv.style.marginLeft = '4px';
     } else {
-      console.warn('[YouTube Plus] Text div not found in Share button');
+      // console.warn('[YouTube Plus] Text div not found in Share button');
     }
 
     btn.onclick = async (e) => {
@@ -75,16 +91,8 @@ function addWatchLaterButton() {
       clipBtn.parentNode.removeChild(clipBtn);
       console.log('[YouTube Plus] Removed Clip button');
     } else {
-      console.warn('[YouTube Plus] Clip button not found');
+      // console.warn('[YouTube Plus] Clip button not found');
     }
-
-    // Insert the Watch Later button after the Share button (or at the end if needed)
-    if (shareBtn.nextSibling) {
-      shareBtn.parentNode.insertBefore(btn, shareBtn.nextSibling);
-    } else {
-      shareBtn.parentNode.appendChild(btn);
-    }
-    console.log('[YouTube Plus] Inserted Watch Later button after Share button');
 
     // Set up a MutationObserver to move the Save button when the More menu is opened
     const observeSaveButton = () => {
@@ -117,8 +125,10 @@ function addWatchLaterButton() {
         setTimeout(observeSaveButton, 100); // Wait for menu to render
       }
     });
+    return true;
   } catch (err) {
     console.error('[YouTube Plus] Error in addWatchLaterButton:', err);
+    return false;
   }
 }
 
@@ -217,7 +227,12 @@ function addXIcons() {
     };
     // Insert the Save icon before the X icon
     menu.parentNode.insertBefore(saveIcon, menu);
-    menu.parentNode.insertBefore(xIcon, saveIcon.nextSibling);
+    // Insert the X icon after the Save icon
+    if (saveIcon.nextSibling) {
+      menu.parentNode.insertBefore(xIcon, saveIcon.nextSibling);
+    } else {
+      menu.parentNode.appendChild(xIcon);
+    }
   });
 }
 
@@ -239,9 +254,12 @@ function swapSaveAndDownloadButtons() {
     btn => btn.title?.toLowerCase().includes('download') || btn.getAttribute('aria-label')?.toLowerCase().includes('download')
   );
   if (saveBtn && downloadBtn && saveBtn.nextSibling !== downloadBtn) {
-    // Move Save button before Download button
-    flexibleButtons.insertBefore(saveBtn, downloadBtn);
-    console.log('[YouTube Plus] Swapped Save and Download buttons');
+    // Check that both buttons are actually children of flexibleButtons before moving
+    if (saveBtn.parentNode === flexibleButtons && downloadBtn.parentNode === flexibleButtons) {
+      // Move Save button before Download button
+      flexibleButtons.insertBefore(saveBtn, downloadBtn);
+      console.log('[YouTube Plus] Swapped Save and Download buttons');
+    }
   }
 }
 

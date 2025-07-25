@@ -1,8 +1,8 @@
 {
     "manifest_version": 3,
-    "name": "YouTube Plus",
+    "name": "YouTube Shortcuts",
     "version": "1.0",
-    "description": "Unlocks useful features for YouTube",
+    "description": "Unlocks useful shortcuts and features for YouTube",
     "content_scripts": [
         {
             "matches": [

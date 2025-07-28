@@ -1,34 +1,41 @@
 # YouTube Shortcuts
 
-A Chrome extension that enhances your YouTube experience by adding useful shortcuts and removing unnecessary buttons.
+A Chrome extension that enhances your YouTube experience by adding useful shortcuts and custom buttons to the video player and playlist pages.
 
 ## What it does
 
 ### 🎥 Video Player Page Enhancements
 
-1. **Replaces "Share" button with "Watch Later" button**
-   - The Share button is replaced with a convenient "Watch Later" button
-   - You can always copy the URL manually, so the Share button is redundant
+1. **Custom "Watch Later" button**
+   - Adds a dedicated "Watch Later" button to the video player controls
    - One-click access to add videos to your Watch Later playlist
+   - Positioned in the right controls area for easy access
 
-2. **Removes the "Clip" button**
-   - Eliminates the rarely-used Clip button from the video player
-   - Makes the "Save to Playlist" button more accessible
-   - Cleaner, less cluttered interface
+2. **Custom "Save to Playlist" button**
+   - Adds a dedicated "Save to Playlist" button to the video player controls
+   - Quick access to save videos to your playlists
+   - Automatically triggers YouTube's native save dialog
 
-### 📋 Watch Later Playlist Improvements
+3. **Smart Button Placement**
+   - Buttons are intelligently positioned in the video player controls
+   - Automatically adapts to YouTube's interface changes
+   - Works with both regular videos and YouTube Shorts
 
-3. **Adds quick action buttons**
-   - **Remove button (X icon)**: Instantly remove videos from Watch Later without opening the 3-dot menu
+### 📋 Playlist Page Improvements
+
+4. **Quick Action Icons**
+   - **Remove button (X icon)**: Instantly remove videos from playlists without opening the 3-dot menu
    - **Save to Playlist button**: Quick access to save videos to other playlists
+   - Icons appear next to each video in playlist views
    - No more clicking through menus for common actions
 
 ## Features
 
 - **Seamless Integration**: Works with YouTube's existing interface
-- **Keyboard Shortcuts**: Supports YouTube's native keyboard shortcuts
-- **Dynamic Updates**: Automatically adapts to YouTube's interface changes
+- **Dynamic Updates**: Automatically adapts to YouTube's interface changes and navigation
 - **Performance Optimized**: Lightweight and doesn't slow down YouTube
+- **Smart Detection**: Automatically detects page changes and video player updates
+- **Cross-Page Support**: Works on video pages, playlist pages, and YouTube Shorts
 
 ## Installation
 
@@ -66,9 +73,10 @@ cd youtube-shortcuts
 
 Once installed, the extension works automatically:
 
-- **On video pages**: Look for the "Later" button where the Share button used to be
-- **On Watch Later playlist**: Look for X (remove) and save icons next to each video
+- **On video pages**: Look for the "Watch Later" and "Save to Playlist" buttons in the video player controls
+- **On playlist pages**: Look for X (remove) and save icons next to each video
 - **No additional setup required**: The extension activates automatically on YouTube
+- **Works with YouTube Shorts**: Buttons appear in Shorts player as well
 
 ## Browser Compatibility
 
@@ -83,6 +91,8 @@ Once installed, the extension works automatically:
 - **Content Scripts**: Automatically injects on YouTube pages
 - **Permissions**: Only requires access to YouTube domains
 - **No background scripts**: Lightweight and privacy-friendly
+- **Mutation Observers**: Intelligently detects interface changes
+- **URL Change Detection**: Automatically adapts to YouTube's navigation
 
 ## Troubleshooting
 
@@ -96,6 +106,7 @@ Once installed, the extension works automatically:
 1. Wait a few seconds for the page to fully load
 2. Navigate to a different YouTube page and back
 3. Check if YouTube has updated their interface
+4. Try refreshing the page
 
 ### Performance issues?
 - The extension is designed to be lightweight
@@ -112,9 +123,15 @@ This project is open source. Feel free to modify and distribute as needed.
 
 ## Changelog
 
+### Version 2.0
+- Added custom "Watch Later" button to video player
+- Added custom "Save to Playlist" button to video player
+- Enhanced playlist page with quick action icons
+- Improved URL change detection and navigation handling
+- Better support for YouTube Shorts
+- Optimized performance and reliability
+
 ### Version 1.0
 - Initial release
-- Watch Later button replacement
-- Clip button removal
-- Quick action buttons for Watch Later playlist
+- Basic playlist functionality
 - Support for YouTube's dynamic interface updates 

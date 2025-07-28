@@ -1,28 +1,17 @@
 console.log("YouTube Plus: content script loaded");
 
 let lastUrl = location.href;
-let buttonProcessed = false;
-
-function resetButtonState() {
-  buttonProcessed = false;
-  console.log('[YouTube Plus] Button state reset for navigation');
-}
 
 function detectUrlChange() {
   const currentUrl = location.href;
   if (currentUrl !== lastUrl) {
-    console.log('[YouTube Plus] Navigation detected:', lastUrl, '->', currentUrl);
+    console.log('[YouTube Plus] Navigation detected');
     lastUrl = currentUrl;
-    
-    resetButtonState();
     
     if (currentUrl.includes('/watch')) {
       setTimeout(() => {
-        console.log('[YouTube Plus] Starting buttons for new watch page');
         addCustomButtons();
       }, 1000);
-    } else {
-      console.log('[YouTube Plus] Navigated away from watch page, stopping');
     }
     
     return true;
@@ -32,32 +21,18 @@ function detectUrlChange() {
 
 function triggerSaveToPlaylist() {
   try {
-    const saveButton = document.querySelector('button[title="Save"][aria-label="Save to playlist"]');
+    const saveButton = document.querySelector('button[title="Save"][aria-label="Save to playlist"]') ||
+                      document.querySelector('button[aria-label="Save to playlist"]') ||
+                      Array.from(document.querySelectorAll('button.yt-spec-button-shape-next')).find(
+                        btn => btn.title === 'Save' || btn.getAttribute('aria-label') === 'Save to playlist'
+                      );
     
     if (saveButton) {
       saveButton.click();
       console.log('[YouTube Plus] Clicked Save to playlist button');
-      return;
+    } else {
+      console.warn('[YouTube Plus] Save to playlist button not found');
     }
-    
-    const saveButtonFallback = document.querySelector('button[aria-label="Save to playlist"]');
-    if (saveButtonFallback) {
-      saveButtonFallback.click();
-      console.log('[YouTube Plus] Clicked Save to playlist button (fallback)');
-      return;
-    }
-    
-    const saveButtonByClass = Array.from(document.querySelectorAll('button.yt-spec-button-shape-next')).find(
-      btn => btn.title === 'Save' || btn.getAttribute('aria-label') === 'Save to playlist'
-    );
-    
-    if (saveButtonByClass) {
-      saveButtonByClass.click();
-      console.log('[YouTube Plus] Clicked Save to playlist button (class fallback)');
-      return;
-    }
-    
-    console.warn('[YouTube Plus] Save to playlist button not found');
     
   } catch (error) {
     console.error('[YouTube Plus] Error triggering save to playlist:', error);
@@ -121,7 +96,6 @@ function addCustomButtons() {
   try {
     const rightControls = document.querySelector('.ytp-right-controls');
     if (!rightControls) {
-      console.log('[YouTube Plus] Right controls not found');
       return false;
     }
 
@@ -130,20 +104,15 @@ function addCustomButtons() {
     const existingSaveBtn = rightControls.querySelector('#ytp-custom-save-btn');
     
     if (existingWatchLaterBtn && existingSaveBtn) {
-      console.log('[YouTube Plus] Custom buttons already exist');
       return true;
     }
 
-    // FIXED: Multiple fallback options instead of requiring subtitles button
     const subtitlesButton = rightControls.querySelector('.ytp-subtitles-button');
     const settingsButton = rightControls.querySelector('.ytp-settings-button');
     const miniplayerButton = rightControls.querySelector('.ytp-miniplayer-button');
     const fullscreenButton = rightControls.querySelector('.ytp-fullscreen-button');
     
     const referenceButton = subtitlesButton || settingsButton || miniplayerButton || fullscreenButton;
-
-    console.log('[YouTube Plus] Adding custom Watch Later and Save buttons');
-    console.log('[YouTube Plus] Reference button found:', referenceButton?.className || 'none - will append to end');
 
     if (!existingWatchLaterBtn) {
       const watchLaterBtn = createWatchLaterButton();
@@ -153,7 +122,6 @@ function addCustomButtons() {
       } else {
         rightControls.appendChild(watchLaterBtn);
       }
-      console.log('[YouTube Plus] Added Watch Later button');
     }
 
     if (!existingSaveBtn) {
@@ -164,7 +132,6 @@ function addCustomButtons() {
       } else {
         rightControls.appendChild(saveBtn);
       }
-      console.log('[YouTube Plus] Added Save button');
     }
     
     return true;
@@ -175,7 +142,7 @@ function addCustomButtons() {
   }
 }
 
-// MutationObserver primarily handles changes, reducing need for polling
+// MutationObserver for player changes
 const playerObserver = new MutationObserver((mutations) => {
   if (detectUrlChange()) return;
   
@@ -199,13 +166,9 @@ const playerObserver = new MutationObserver((mutations) => {
     }
   });
   
-  if (shouldCheck && !buttonProcessed && location.href.includes('/watch')) {
+  if (shouldCheck && location.href.includes('/watch')) {
     setTimeout(() => {
-      console.log('[YouTube Plus] Player change detected, checking for buttons');
-      const added = addCustomButtons();
-      if (added) {
-        buttonProcessed = true;
-      }
+      addCustomButtons();
     }, 100);
   }
 });
@@ -214,7 +177,6 @@ playerObserver.observe(document.body, { childList: true, subtree: true });
 
 // Navigation listeners
 window.addEventListener('popstate', () => {
-  console.log('[YouTube Plus] Popstate detected');
   detectUrlChange();
 });
 
@@ -224,12 +186,9 @@ history.pushState = function(...args) {
   setTimeout(() => detectUrlChange(), 100);
 };
 
-// FIXED: Always check if on watch page, don't require it from start
+// Initial setup
 if (location.href.includes('/watch')) {
-  console.log('[YouTube Plus] Already on watch page, initializing buttons');
   setTimeout(() => addCustomButtons(), 1000);
-} else {
-  console.log('[YouTube Plus] Not on watch page initially, waiting for navigation');
 }
 
 // CSS styles

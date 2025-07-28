@@ -1,15 +1,10 @@
 console.log("YouTube Plus: content script loaded");
 
-let watchLaterInterval = null;
 let lastUrl = location.href;
 let buttonProcessed = false;
 
 function resetButtonState() {
   buttonProcessed = false;
-  if (watchLaterInterval) {
-    clearInterval(watchLaterInterval);
-    watchLaterInterval = null;
-  }
   console.log('[YouTube Plus] Button state reset for navigation');
 }
 
@@ -24,7 +19,7 @@ function detectUrlChange() {
     if (currentUrl.includes('/watch')) {
       setTimeout(() => {
         console.log('[YouTube Plus] Starting buttons for new watch page');
-        startWatchLaterInterval();
+        addCustomButtons();
       }, 1000);
     } else {
       console.log('[YouTube Plus] Navigated away from watch page, stopping');
@@ -33,29 +28,6 @@ function detectUrlChange() {
     return true;
   }
   return false;
-}
-
-function startWatchLaterInterval() {
-  if (watchLaterInterval || buttonProcessed) return;
-  
-  console.log('[YouTube Plus] Starting watch later and save buttons interval');
-  let attempts = 0;
-  const maxAttempts = 60; // Limit attempts to prevent endless polling
-  
-  watchLaterInterval = setInterval(() => {
-    attempts++;
-    const added = addCustomButtons();
-    if (added) {
-      clearInterval(watchLaterInterval);
-      watchLaterInterval = null;
-      buttonProcessed = true;
-      console.log('[YouTube Plus] Custom buttons added successfully');
-    } else if (attempts >= maxAttempts) {
-      clearInterval(watchLaterInterval);
-      watchLaterInterval = null;
-      console.log('[YouTube Plus] Max attempts reached, giving up');
-    }
-  }, 500);
 }
 
 function triggerSaveToPlaylist() {
@@ -255,7 +227,7 @@ history.pushState = function(...args) {
 // FIXED: Always check if on watch page, don't require it from start
 if (location.href.includes('/watch')) {
   console.log('[YouTube Plus] Already on watch page, initializing buttons');
-  setTimeout(() => startWatchLaterInterval(), 1000);
+  setTimeout(() => addCustomButtons(), 1000);
 } else {
   console.log('[YouTube Plus] Not on watch page initially, waiting for navigation');
 }

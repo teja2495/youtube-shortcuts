@@ -1,6 +1,6 @@
 # YouTube Watch Later Shortcuts
 
-A Chrome extension that enhances your YouTube experience by adding convenient shortcuts for managing your Watch Later playlist and other playlists directly from the video player and playlist pages.
+A Chrome extension that enhances your YouTube experience by adding convenient shortcuts for managing videos directly from the video player and playlist pages.
 
 ## What it does
 
@@ -24,9 +24,9 @@ A Chrome extension that enhances your YouTube experience by adding convenient sh
 ### 📋 Playlist Page Improvements
 
 4. **Quick Action Icons**
-   - **Remove button (X icon)**: Instantly remove videos from playlists without opening the 3-dot menu
+   - **Remove button (X icon)**: Instantly remove videos from any playlist without opening the 3-dot menu
    - **Save to Playlist button**: Quick access to save videos to other playlists
-   - Icons appear next to each video in playlist views
+   - Icons appear next to each video in all playlist views
    - No more clicking through menus for common actions
 
 ## Features
@@ -74,7 +74,7 @@ cd youtube-shortcuts
 Once installed, the extension works automatically:
 
 - **On video pages**: Look for the "Watch Later" and "Save to Playlist" buttons in the video player controls
-- **On playlist pages**: Look for X (remove) and save icons next to each video
+- **On playlist pages**: Look for X (remove) and save icons next to each video in any playlist
 - **No additional setup required**: The extension activates automatically on YouTube
 - **Works with YouTube Shorts**: Buttons appear in Shorts player as well
 

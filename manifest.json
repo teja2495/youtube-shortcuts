@@ -2,7 +2,7 @@
     "manifest_version": 3,
     "name": "YouTube Watch Later Shortcuts",
     "version": "1.0",
-    "description": "Unlocks useful watch later and save to playlist shortcuts for YouTube",
+    "description": "Unlocks useful watch later & other shortcuts on YouTube video player and Playlist page",
     "content_scripts": [
         {
             "matches": [

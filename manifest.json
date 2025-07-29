@@ -1,6 +1,6 @@
 {
     "manifest_version": 3,
-    "name": "YouTube Shortcuts",
+    "name": "YouTube Watch Later Shortcuts",
     "version": "1.0",
     "description": "Unlocks useful shortcuts and features for YouTube",
     "content_scripts": [

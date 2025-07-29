@@ -1,8 +1,8 @@
 {
     "manifest_version": 3,
-    "name": "YouTube Watch Later Shortcuts",
+    "name": "YouTube™ Watch Later Shortcuts",
     "version": "1.0",
-    "description": "Unlocks useful watch later & other shortcuts on YouTube video player and Playlist page",
+    "description": "Unlocks useful watch later & other shortcuts on YouTube™ video player and Playlist page",
     "content_scripts": [
         {
             "matches": [

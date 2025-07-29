@@ -1,6 +1,6 @@
-# YouTube Shortcuts
+# YouTube Watch Later Shortcuts
 
-A Chrome extension that enhances your YouTube experience by adding useful shortcuts and custom buttons to the video player and playlist pages.
+A Chrome extension that enhances your YouTube experience by adding convenient shortcuts for managing your Watch Later playlist and other playlists directly from the video player and playlist pages.
 
 ## What it does
 

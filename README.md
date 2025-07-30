@@ -39,7 +39,15 @@ A Chrome extension that enhances your YouTube experience by adding convenient sh
 
 ## Installation
 
-### Method 1: Manual Installation (Recommended)
+### Method 1: Chrome Web Store (Recommended)
+
+The easiest way to install the extension is through the Chrome Web Store:
+
+**[Install from Chrome Web Store](https://chromewebstore.google.com/detail/youtube-watch-later-short/omdomjnalailcppncbjgblhmbedgfcen)**
+
+Simply click the link above and then click "Add to Chrome" to install the extension directly from the Chrome Web Store.
+
+### Method 2: Manual Installation
 
 1. **Download the extension**
    - Download this repository as a ZIP file
@@ -57,7 +65,7 @@ A Chrome extension that enhances your YouTube experience by adding convenient sh
    - Refresh any open YouTube tabs
    - The extension will automatically activate on YouTube pages
 
-### Method 2: From Source Code
+### Method 3: From Source Code
 
 If you have the source code:
 
@@ -66,7 +74,7 @@ If you have the source code:
 git clone [repository-url]
 cd youtube-shortcuts
 
-# Follow steps 2-4 from Method 1 above
+# Follow steps 2-4 from Method 2 above
 ```
 
 ## Usage

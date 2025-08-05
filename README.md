@@ -6,7 +6,7 @@ A Chrome extension that enhances your YouTube experience by adding convenient sh
 
 ### 🎥 Video Player Page Enhancements
 
-![Video Player Shortcuts](screenshots/player-shortcuts.png){: width="600px"}
+![Video Player Shortcuts](screenshots/player-shortcuts.png)
 
 1. **Custom "Watch Later" button**
    - Adds a dedicated "Watch Later" button to the video player controls
@@ -25,7 +25,7 @@ A Chrome extension that enhances your YouTube experience by adding convenient sh
 
 ### 📋 Playlist Page Improvements
 
-![Playlist Shortcuts](screenshots/playlist-shortcuts.png){: width="600px"}
+![Playlist Shortcuts](screenshots/playlist-shortcuts.png)
 
 4. **Quick Action Icons**
    - **Remove button (X icon)**: Instantly remove videos from any playlist without opening the 3-dot menu

@@ -125,25 +125,6 @@ Once installed, the extension works automatically:
 - If you experience slowdowns, try refreshing the page
 - Check if other extensions might be conflicting
 
-## Contributing
-
-Feel free to submit issues or pull requests to improve the extension!
-
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## Changelog
-
-### Version 2.0
-- Added custom "Watch Later" button to video player
-- Added custom "Save to Playlist" button to video player
-- Enhanced playlist page with quick action icons
-- Improved URL change detection and navigation handling
-- Better support for YouTube Shorts
-- Optimized performance and reliability
-
-### Version 1.0
-- Initial release
-- Basic playlist functionality
-- Support for YouTube's dynamic interface updates 
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details. 

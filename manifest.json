@@ -9,8 +9,8 @@
                 "*://www.youtube.com/*"
             ],
             "js": [
-                "content.js",
-                "playlist-icons.js"
+                "youtube-player-buttons.js",
+                "youtube-playlist-buttons.js"
             ],
             "run_at": "document_idle"
         }
